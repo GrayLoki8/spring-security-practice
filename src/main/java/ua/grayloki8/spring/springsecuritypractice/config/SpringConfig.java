@@ -29,7 +29,42 @@ import java.util.Properties;
 
 @Configuration
 public class SpringConfig implements WebMvcConfigurer {
+    /*private final ApplicationContext applicationContext;
 
+    private final Environment env;
+
+    @Autowired
+    public SpringConfig(ApplicationContext applicationContext, Environment env) {
+        this.applicationContext = applicationContext;
+        this.env = env;
+    }
+
+    @Bean
+    public SpringResourceTemplateResolver templateResolver() {
+        SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
+        templateResolver.setApplicationContext(applicationContext);
+        templateResolver.setPrefix("classpath:/templates/**");
+        templateResolver.setSuffix(".html");
+        templateResolver.setCharacterEncoding("UTF-8");
+        return templateResolver;
+    }
+
+    @Bean
+    public SpringTemplateEngine templateEngine() {
+        SpringTemplateEngine templateEngine = new SpringTemplateEngine();
+        templateEngine.setTemplateResolver(templateResolver());
+        templateEngine.setEnableSpringELCompiler(true);
+        return templateEngine;
+    }
+
+    @Override
+    public void configureViewResolvers(ViewResolverRegistry registry) {
+        ThymeleafViewResolver resolver = new ThymeleafViewResolver();
+        resolver.setTemplateEngine(templateEngine());
+        resolver.setCharacterEncoding("UTF-8");
+
+        registry.viewResolver(resolver);
+    }*/
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
