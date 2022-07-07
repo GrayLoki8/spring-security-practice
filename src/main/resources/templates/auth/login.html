@@ -6,6 +6,7 @@
 </head>
 <body>
 <form th:method="post" th:action="@{/process_login}">
+    <input type="hidden" th:name="${_csrd.parameterName}" th:value="${_csrd.token}">
     <label for="username">Input username:</label>
     <input type="text" name="username" id="username">
     <br>

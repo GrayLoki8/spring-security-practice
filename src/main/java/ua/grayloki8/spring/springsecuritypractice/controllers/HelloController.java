@@ -22,5 +22,9 @@ public class HelloController {
         System.out.println(personDetails.getPerson());
         return "auth/hello2";
     }
+    @GetMapping("/admin")
+    public String adminPage(){
+        return "admin";
+    }
 
 }
