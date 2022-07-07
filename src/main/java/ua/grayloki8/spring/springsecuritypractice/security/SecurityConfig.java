@@ -24,7 +24,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //config Spring Security
         //config authorizationn
 
-        http.csrf().disable().authorizeRequests().antMatchers("/auth/login","/error").permitAll().
+        http.csrf().disable().authorizeRequests().antMatchers("/auth/login","/error","/auth/registration").permitAll().
                 anyRequest().authenticated().and().
                 formLogin().loginPage("/auth/login").
                 loginProcessingUrl("/process_login").

@@ -10,7 +10,7 @@ import ua.grayloki8.spring.springsecuritypractice.security.PersonDetails;
 public class HelloController {
     @GetMapping("/hello")
     public String sayHello(){
-        return "hello";
+        return "auth/hello";
     }
     @GetMapping("/showUserInfo")
     public String showUserInfo(){
