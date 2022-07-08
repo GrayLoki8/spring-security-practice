@@ -6,20 +6,23 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import ua.grayloki8.spring.springsecuritypractice.config.JWTFilter;
 import ua.grayloki8.spring.springsecuritypractice.services.PersonDetailsService;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final PersonDetailsService personDetailsService;
+    private final JWTFilter jwtFilter;
     @Autowired
-    public SecurityConfig(PersonDetailsService personDetailsService) {
+    public SecurityConfig(PersonDetailsService personDetailsService, JWTFilter jwtFilter) {
         this.personDetailsService = personDetailsService;
+        this.jwtFilter = jwtFilter;
     }
 
     @Override
@@ -27,7 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //config Spring Security
         //config authorizationn
 
-        http.authorizeRequests().
+        http.csrf().disable().authorizeRequests().
                 antMatchers("/admin").hasRole("ADMIN")
                 .antMatchers("/auth/login","/error","/auth/registration").permitAll().
                 anyRequest().hasAnyRole("USER","ADMIN").
@@ -36,7 +39,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 loginProcessingUrl("/process_login").
         defaultSuccessUrl("/hello",true).
         failureUrl("/auth/login?error")
-        .and().logout().logoutUrl("/logout").logoutSuccessUrl("/auth/login");
+        .and().logout().logoutUrl("/logout").logoutSuccessUrl("/auth/login")
+        .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
     }
 
 
