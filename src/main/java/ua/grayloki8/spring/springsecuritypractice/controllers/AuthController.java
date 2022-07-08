@@ -13,7 +13,7 @@ import ua.grayloki8.spring.springsecuritypractice.util.UserValidator;
 
 import javax.validation.Valid;
 
-@Controller
+//@Controller
 @RequestMapping("/auth")
 public class AuthController {
    private UserValidator personValidator;
