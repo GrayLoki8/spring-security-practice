@@ -2,8 +2,12 @@ package ua.grayloki8.spring.springsecuritypractice.controllers;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ua.grayloki8.spring.springsecuritypractice.dto.AuthenticationDTO;
 import ua.grayloki8.spring.springsecuritypractice.dto.UserDTO;
 import ua.grayloki8.spring.springsecuritypractice.models.User;
 import ua.grayloki8.spring.springsecuritypractice.security.JWTUtil;
@@ -20,17 +24,16 @@ public class AuthRestController {
     private RegistrationService registrationService;
     private JWTUtil jwtUtil;
     private ModelMapper modelMapper;
+    private AuthenticationManager authenticationManager;
     @Autowired
-    public AuthRestController(UserValidator personValidator, RegistrationService registrationService, JWTUtil jwtUtil, ModelMapper modelMapper) {
+    public AuthRestController(UserValidator personValidator, RegistrationService registrationService, JWTUtil jwtUtil, ModelMapper modelMapper, AuthenticationManager authenticationManager) {
         this.personValidator = personValidator;
         this.registrationService = registrationService;
         this.jwtUtil = jwtUtil;
         this.modelMapper = modelMapper;
+        this.authenticationManager = authenticationManager;
     }
-    @GetMapping("/login")
-    public String loginPage(){
-        return "suka";
-    }
+
     @GetMapping("/registration")
     public String registrationPage(@ModelAttribute("person") User user){
         return "auth/registration";
@@ -45,6 +48,19 @@ public class AuthRestController {
         registrationService.register(user);
         String token = jwtUtil.generateToken(user.getUserName());
         return Map.of("jwt-token",token);
+    }
+    @PostMapping("/login")
+    public Map<String,String> performLogin(@RequestBody  AuthenticationDTO authenticationDTO){
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(authenticationDTO.getUsername(), authenticationDTO.getPassword());
+        try{
+        authenticationManager.authenticate(token);}
+        catch (AuthenticationException e) {
+            return Map.of("message","Incorrect credentials!");
+
+        }
+        String generatedToken = jwtUtil.generateToken(authenticationDTO.getUsername());
+        return Map.of("jwt-token",generatedToken);
+
     }
 
     public User convertToUser(UserDTO userDTO){
